@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+<bean id ="Triangle" class="com.min.main.Triangle" >
+ <!--   setter injection -->
+  <!-- <property name="type" value="Equilateral"></property> -->
+  
+ <!--  constructor injection -->
+  <!-- <constructor-arg value="Equilateral"></constructor-arg>
+  <constructor-arg value="20"></constructor-arg> -->
+  
+   <!-- <constructor-arg index="0" value="Equilateral"></constructor-arg>
+  <constructor-arg index="1" value="20"></constructor-arg> -->
+  
+ <!-- <constructor-arg type="int"  value="20"></constructor-arg> -->
+ 
+<!--  <constructor-arg type="java.lang.String"  value="20"></constructor-arg> -->
+  </bean>
+  
+  <!-- scope by default is singleton 
+  Basic scope 
+    1. singleton
+    2. prototype
+  For web may be 3 scopes
+  
+  singleton pattern is java and singleton in spring is diff cause if many spring context is definded in JVM, may have more
+  beans for same class
+  
+  by default, application context reads the application context xml and create beans before getBean so they are always same bean
+  instance no matter how many times get Bean is called so if we needs new bean everytime get bean is called we nned to
+  go for scope="prototype". By default it is singleton
+  -->
+  <bean id ="Triangle1" class="com.min.main.Triangle1" >
+   <property name="pointA" ref="zeropoint"></property>
+   <!-- inner bean can be applied like below for point B  id is not required-->
+   <property name="pointB">
+   <bean class="com.min.main.Point">
+   <property name="x" value="0"></property>
+   <property name="y" value="20"></property>
+  </bean>
+   </property>
+   <property name="pointC" ref="PB"></property>
+  </bean>
+  
+  <!-- Example of how to use collection (list) who will do that if the list is really long -->
+  <bean id ="Triangle2" class="com.min.main.Triangle1">
+    <property name="points">
+     <list>
+       <ref bean="zeropoint"/>
+       <ref bean="PB"/>
+     </list>
+    </property>
+  </bean>
+  <!-- to demonstrate inheritance bean -->
+  <bean id ="TriangleParent" class="com.min.main.Triangle1" abstract="true">
+    <property name="pointA" ref="zeropoint"></property>
+  </bean>
+  <bean id ="Triangle3" class="com.min.main.Triangle1" parent="TriangleParent" init-method="myInit" destroy-method="myDestroy">
+     <property name="pointB" ref="PB"></property>
+     <property name="pointC" ref="newPoint"></property>
+  </bean>
+ <!--  if we want to use autowire(byname);we need to have id same as member veriable names see tut 10 -->
+  <bean id ="zeropoint" class="com.min.main.Point">
+   <property name="x" value="0"></property>
+   <property name="y" value="0"></property>
+  </bean>
+  <bean id ="PB" class="com.min.main.Point">
+   <property name="x" value="0"></property>
+   <property name="y" value="-20"></property>
+  </bean>
+  
+  <bean id ="newPoint" class="com.min.main.Point">
+   <property name="x" value="0"></property>
+   <property name="y" value="-20"></property>
+  </bean>
+  
+</beans>
